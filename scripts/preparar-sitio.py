@@ -107,7 +107,8 @@ for script_index, script in enumerate(scripts):
 site_url = 'https://brun3y.github.io/skills-ai-week/'
 social_title = 'Skills de agentes de IA | AI Week 2026'
 social_description = 'Aprende cómo funcionan los skills en Claude Code, Codex e IBM Bob: instrucciones en Markdown, scripts y flujos de trabajo reutilizables.'
-social_image = site_url + 'assets/ai-week-skills-social.png'
+social_image_version = hashlib.sha256((SITE / 'assets/ai-week-skills-social.png').read_bytes()).hexdigest()[:10]
+social_image = site_url + 'assets/ai-week-skills-social.png?v=' + social_image_version
 social_alt = 'Logo de AI Week 2026 y título Skills sobre un fondo azul y morado.'
 page = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + escape(social_description, quote=True) + '">', page, count=1)
 social_meta = '\n'.join([
