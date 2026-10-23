@@ -111,13 +111,21 @@ hero = '''<section class="event-hero" aria-labelledby="event-heading">
     <img class="event-wordmark" src="assets/ai-week-2026.webp" width="985" height="213" alt="AI week 2026">
     <div class="pillar-brand"><img src="assets/pilar-skills.svg" width="40" height="44" alt=""><span>Pilar de Skills<small>Campus Guadalajara</small></span></div>
   </div>
-  <div class="event-content">
+  <div class="event-layout">
+   <div class="event-content">
     <p class="event-eyebrow">APRENDE · CREA · AUTOMATIZA</p>
     <h1 id="event-heading">Cómo funcionan los <span>skills de agentes de IA</span></h1>
     <p class="event-description">De las instrucciones en Markdown a un flujo de trabajo reutilizable.</p>
     <div class="event-agents" aria-label="Agentes incluidos"><span>Claude Code</span><span>Codex</span><span>IBM Bob</span></div>
+   </div>
+   <div class="event-access">
+    <a class="event-qr" href="https://brun3y.github.io/skills-ai-week/" aria-label="Abrir la guía de skills de agentes de IA">
+      <img src="assets/guia-skills-qr.svg" width="144" height="144" alt="Código QR de https://brun3y.github.io/skills-ai-week/">
+      <span>Escanea y abre la guía</span>
+    </a>
+    <a class="event-start" href="#funcionamiento">Explorar la guía <span aria-hidden="true">↓</span></a>
+   </div>
   </div>
-  <a class="event-start" href="#funcionamiento">Explorar la guía <span aria-hidden="true">↓</span></a>
 </section>'''
 page = re.sub(r'<h1>.*?</h1>', '', page, count=1, flags=re.S)
 page = page.replace('<header class="masthead">', hero + '<header class="masthead">' + downloads, 1)
