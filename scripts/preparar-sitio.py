@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Prepare the checked Archify artifact for Pages and export standard Markdown."""
+from html import escape
 from html.parser import HTMLParser
 import base64
 import hashlib
@@ -102,6 +103,33 @@ parser.close()
 page = ''.join(parser.parts)
 for script_index, script in enumerate(scripts):
     page = page.replace('<!--ARCHIFY_SCRIPT_' + str(script_index) + '-->', script, 1)
+
+site_url = 'https://brun3y.github.io/skills-ai-week/'
+social_title = 'Skills de agentes de IA | AI Week 2026'
+social_description = 'Aprende cómo funcionan los skills en Claude Code, Codex e IBM Bob: instrucciones en Markdown, scripts y flujos de trabajo reutilizables.'
+social_image = site_url + 'assets/ai-week-skills-social.png'
+social_alt = 'Logo de AI Week 2026 y título Skills sobre un fondo azul y morado.'
+page = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + escape(social_description, quote=True) + '">', page, count=1)
+social_meta = '\n'.join([
+    '<link rel="canonical" href="' + site_url + '">',
+    '<meta property="og:type" content="website">',
+    '<meta property="og:site_name" content="AI Week 2026">',
+    '<meta property="og:locale" content="es_MX">',
+    '<meta property="og:url" content="' + site_url + '">',
+    '<meta property="og:title" content="' + escape(social_title, quote=True) + '">',
+    '<meta property="og:description" content="' + escape(social_description, quote=True) + '">',
+    '<meta property="og:image" content="' + social_image + '">',
+    '<meta property="og:image:type" content="image/png">',
+    '<meta property="og:image:width" content="1200">',
+    '<meta property="og:image:height" content="630">',
+    '<meta property="og:image:alt" content="' + escape(social_alt, quote=True) + '">',
+    '<meta name="twitter:card" content="summary_large_image">',
+    '<meta name="twitter:title" content="' + escape(social_title, quote=True) + '">',
+    '<meta name="twitter:description" content="' + escape(social_description, quote=True) + '">',
+    '<meta name="twitter:image" content="' + social_image + '">',
+    '<meta name="twitter:image:alt" content="' + escape(social_alt, quote=True) + '">',
+])
+page = page.replace('</head>', social_meta + '\n</head>', 1)
 css_version = hashlib.sha256((SITE / 'ajustes.css').read_bytes()).hexdigest()[:10]
 js_version = hashlib.sha256((SITE / 'ajustes.js').read_bytes()).hexdigest()[:10]
 page = page.replace('</head>', '<link rel="preload" href="assets/ibm-plex-sans.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="ajustes.css?v=' + css_version + '"></head>', 1)
