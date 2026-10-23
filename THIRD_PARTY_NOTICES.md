@@ -1,0 +1,1 @@
+El sitio incorpora el visor y el generador HTML de [Archify](https://github.com/tt-a1i/archify), distribuido bajo licencia MIT. La licencia original se conserva en [site/LICENSE-ARCHIFY.txt](site/LICENSE-ARCHIFY.txt).

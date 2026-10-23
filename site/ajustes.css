@@ -1,0 +1,13 @@
+.masthead,.tools{flex-wrap:wrap}
+.masthead{gap:20px}
+.tools{max-width:100%;justify-content:flex-start}
+.recursos{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0 0 24px;font-size:13px}
+.recursos a{color:var(--accent,#88aaff);text-decoration:underline;text-underline-offset:3px}
+@media(max-width:600px){
+  .masthead{align-items:flex-start}
+  .tools{width:100%;gap:8px}
+  .theme-controls{flex-shrink:0}
+  .tool-menu{max-width:100%}
+  .recursos{gap:12px;line-height:1.7}
+}
+@media print{.recursos{display:none}}
