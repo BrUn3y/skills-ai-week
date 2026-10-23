@@ -1,5 +1,9 @@
 /* Translate fallback notices emitted by Archify's reader at runtime. */
 (() => {
+  const nativeTheme = JSON.parse(document.getElementById('aiweek-native-theme').textContent);
+  window.aiWeekStyleViewer = html => html.replace('</head>', '<style id="aiweek-viewer-style">' + nativeTheme.css + '</style></head>');
+  // Start in the event palette; light and system controls remain available.
+  document.querySelector('[data-theme-choice="dark"]')?.click();
   const phrases = new Map([
     ['This diagram cannot fit this page width with readable text. Open the interactive view to inspect it.', 'Abre la vista interactiva para ampliar y explorar este diagrama.'],
     ['▶ Step through', '▶ Recorrer paso a paso'],

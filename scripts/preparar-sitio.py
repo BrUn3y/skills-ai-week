@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Prepare the checked Archify artifact for Pages and export standard Markdown."""
 from html.parser import HTMLParser
+import base64
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -100,10 +102,39 @@ parser.close()
 page = ''.join(parser.parts)
 for script_index, script in enumerate(scripts):
     page = page.replace('<!--ARCHIFY_SCRIPT_' + str(script_index) + '-->', script, 1)
-page = page.replace('</head>', '<link rel="stylesheet" href="ajustes.css"></head>', 1)
+css_version = hashlib.sha256((SITE / 'ajustes.css').read_bytes()).hexdigest()[:10]
+js_version = hashlib.sha256((SITE / 'ajustes.js').read_bytes()).hexdigest()[:10]
+page = page.replace('</head>', '<link rel="preload" href="assets/ibm-plex-sans.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="ajustes.css?v=' + css_version + '"></head>', 1)
 downloads = '<nav class="recursos" aria-label="Descargas"><a href="GUIA-SKILLS.md" download>Descargar guía Markdown</a><a href="plantilla-skill.zip" download>Descargar plantilla de skill</a><a href="fuente.archify.md" download>Descargar fuente Archify</a></nav>'
-page = page.replace('</header>', '</header>' + downloads, 1)
-page = '<script src="ajustes.js"></script></body>'.join(page.rsplit('</body>', 1))
+hero = '''<section class="event-hero" aria-labelledby="event-heading">
+  <div class="event-brands">
+    <img class="event-wordmark" src="assets/ai-week-2026.webp" width="985" height="213" alt="AI week 2026">
+    <div class="pillar-brand"><img src="assets/pilar-skills.svg" width="40" height="44" alt=""><span>Pilar de Skills<small>Campus Guadalajara</small></span></div>
+  </div>
+  <div class="event-content">
+    <p class="event-eyebrow">APRENDE · CREA · AUTOMATIZA</p>
+    <h1 id="event-heading">Cómo funcionan los <span>skills de agentes de IA</span></h1>
+    <p class="event-description">De las instrucciones en Markdown a un flujo de trabajo reutilizable.</p>
+    <div class="event-agents" aria-label="Agentes incluidos"><span>Claude Code</span><span>Codex</span><span>IBM Bob</span></div>
+  </div>
+  <a class="event-start" href="#funcionamiento">Explorar la guía <span aria-hidden="true">↓</span></a>
+</section>'''
+page = re.sub(r'<h1>.*?</h1>', '', page, count=1, flags=re.S)
+page = page.replace('<header class="masthead">', hero + '<header class="masthead">' + downloads, 1)
+
+# Adapt the iframe appearance without changing native sources or the sandbox.
+handoff = 'frame.srcdoc = end < 0 ? html + script : html.slice(0,end) + script + html.slice(end);'
+styled_handoff = 'frame.srcdoc = window.aiWeekStyleViewer(end < 0 ? html + script : html.slice(0,end) + script + html.slice(end));'
+if page.count(handoff) != 1:
+    raise SystemExit('Archify viewer handoff changed; review the style adapter.')
+page = page.replace(handoff, styled_handoff, 1)
+native_css = (SITE / 'diagramas.css').read_text()
+for name in ['ibm-plex-sans', 'ibm-plex-mono']:
+    font_data = base64.b64encode((SITE / 'assets' / (name + '.woff2')).read_bytes()).decode()
+    native_css = native_css.replace('assets/' + name + '.woff2', 'data:font/woff2;base64,' + font_data)
+theme_payload = json.dumps({'css': native_css}, ensure_ascii=False).replace('<', '\\u003c')
+enhancements = '<script id="aiweek-native-theme" type="application/json">' + theme_payload + '</script><script src="ajustes.js?v=' + js_version + '"></script></body>'
+page = enhancements.join(page.rsplit('</body>', 1))
 (SITE / 'index.html').write_text(page)
 
 source = (ARTIFACT / 'candidate.archify.md').read_text()

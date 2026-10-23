@@ -43,3 +43,9 @@ bash scripts/publicar.sh
 ```
 
 El contenido se consultó el 23 de octubre de 2026. Los comandos y rutas pueden cambiar con las versiones de cada herramienta.
+
+## Identidad visual
+
+La edición de AI Week usa IBM Plex Sans, IBM Plex Mono y una paleta azul marino, morada, azul y turquesa tomada de las referencias del usuario. La cabecera reutiliza un recorte de la marca de la agenda y del fondo; el símbolo del Pilar de Skills proviene de la plantilla PowerPoint. Los archivos originales y los datos de los participantes no se publican.
+
+`site/ajustes.css` define la apariencia de la página y `site/diagramas.css` la de los diagramas abiertos. El generador incorpora esta última en los visores conservando sus fuentes, datos, conexiones y sandbox. Las fuentes se sirven localmente y sus licencias se incluyen en `site/assets/`.
